@@ -1,0 +1,102 @@
+# 突破重围，进入圣殿，消灭食人魔首领
+def summonbyType():
+    summonTypies = ["soldier", "archer", "griffin-rider"]
+    type = len(hero.built) % len(summonTypies)
+    if hero.gold > hero.costOf(summonTypies[type]):
+        hero.summon(summonTypies[type])
+
+def commandAmy(soldier):
+    enemy = soldier.findNearestEnemy()
+    if enemy:
+        hero.command(soldier, "attack", enemy)
+    else:
+        enemy = findFirstTarget()
+        if enemy:
+            hero.command(soldier, "attack", enemy)
+        else:
+            hero.command(soldier, "defend", hero)
+
+def collectCion():
+    item = hero.findNearestItem()
+    if hero.distanceTo(item) < 30:
+        hero.moveXY(item.pos.x, item.pos.y)
+
+def commandPaladins(paladin):
+    target = findFirstTarget()
+    if paladin.health < 50:
+        hero.command(paladin, "cast", "heal", paladin)
+    else:
+        if paladin.canCast("heal"):
+            healtarget = findWeakestFriend()
+            if hero.health < hero.maxHealth *0.95:
+                hero.command(paladin, "cast", "heal", hero)
+            elif healtarget:
+                hero.command(paladin, "cast", "heal", healtarget)
+        else:
+            if target and target.health > 0:
+                hero.command(paladin, "defend", hero)
+            else:
+                target = paladin.findNearestEnemy()
+                if target:
+                    hero.command(paladin, "defend", hero)
+                else:
+                    hero.command(paladin, "defend", hero)
+    pass
+
+def commandGriffin(griffin):
+    enemy = findFirstTarget()
+    if enemy:
+        hero.command(griffin, "attack", enemy)
+    else:
+        enemy = griffin.findNearestEnemy()
+        if enemy:
+            hero.command(griffin, "attack", enemy)
+        else:
+            hero.command(griffin, "defend", hero)
+
+def findWeakestFriend():
+    friends = hero.findFriends()
+    friendIndex = 0
+    weakestHealth = 99999
+    weakestFriend = None
+    while friendIndex < len(friends):
+        friend = friends[friendIndex]
+        if friend.health < weakestHealth:
+            weakestHealth = friend.health
+            weakestFriend = friend
+        friendIndex += 1
+    return weakestFriend
+
+def findFirstTarget():
+    Catapults = hero.findNearest(hero.findByType('catapult'))
+    Towers = hero.findNearest(hero.findByType('tower'))
+    Warlocks = hero.findNearest(hero.findByType('warlock'))
+    
+    if Catapults:
+        return Catapults
+    elif Towers:
+        return Towers
+    elif Warlocks:
+        return Warlocks
+
+while True:
+    friends = hero.findFriends()
+    collectCion()
+    summonbyType()
+    for friend in friends:
+        if friend.type == "soldier" or friend.type == "archer":
+            commandAmy(friend)
+        elif friend.type == "griffin-rider":
+            commandGriffin(friend)
+        elif friend.type == "paladin":
+            commandPaladins(friend)
+
+    enemy = findFirstTarget()
+    if enemy and enemy.health > 0:
+        if hero.canCast("chain-lightning", enemy):
+            hero.cast("chain-lightning", enemy)
+        else:
+            hero.attack(enemy)
+    else:
+        enemy = hero.findNearestEnemy()
+        hero.attack(enemy)
