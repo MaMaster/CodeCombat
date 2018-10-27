@@ -1,4 +1,4 @@
-# 突破重围，进入圣殿，消灭首领
+# 突破重围，进入圣殿，消灭首领可以吗？
 def summonbyType():
     summonTypies = ["soldier", "archer", "griffin-rider"]
     type = len(hero.built) % len(summonTypies)
