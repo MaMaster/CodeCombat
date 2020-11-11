@@ -1,2 +1,2 @@
-# CodeCombat极客战绩
+# CodeCombat极客战记
 try
