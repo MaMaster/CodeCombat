@@ -1,0 +1,28 @@
+# 你需要更好的策略和好的装备来赢得这关。
+# 你的克隆体将会拥有和你一样的装备
+# 但是，他们没有经验，不会用特殊技能。
+while True:
+    flagGreen = hero.findFlag("green")
+    flagBlack = hero.findFlag("black")
+    
+    # 如果是绿色旗子，就建立一个栅栏。
+    if flagGreen:
+        # Build a "fence" at flagGreen's position.
+        x = flagGreen.pos.x
+        y = flagGreen.pos.y
+        hero.moveXY(x, y)
+        # 记住要捡起旗子，在你都完成之后！
+        hero.pickUpFlag(flagGreen)
+    # 如果是黑色旗子，就建立一个火焰陷阱
+    if flagBlack:
+       # Build a "fire-trap" at flagBlack's position.
+        x = flagBlack.pos.x
+        y = flagBlack.pos.y
+        hero.moveXY(x, y)
+        if hero.isReady("cleave"):
+            hero.cleave(flagBlack)
+        # 记住要捡起旗子，在你都完成之后！
+        hero.pickUpFlag(flagBlack)
+    enemy = hero.findNearestEnemy()
+    if enemy:
+        hero.attack(enemy)
